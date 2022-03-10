@@ -1,47 +1,35 @@
-﻿
-namespace linqlesson
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace unit15
 {
-    public class Department
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class Employee
-    {
-        public int DepartmentId { get; set; }
-        public string Name { get; set; }
-        public int Id { get; set; }
-    }
-
     class Program
     {
         static void Main(string[] args)
         {
-            var departments = new List<Department>()
-{
-   new Department() {Id = 1, Name = "Программирование"},
-   new Department() {Id = 2, Name = "Продажи"}
-};
+            var classes = new[]
+            {
+               new Classroom { Students = {"Evgeniy", "Sergey", "Andrew"}, },
+               new Classroom { Students = {"Anna", "Viktor", "Vladimir"}, },
+               new Classroom { Students = {"Bulat", "Alex", "Galina"}, }
+           };
+            var allStudents = GetAllStudents(classes);
 
-            var employees = new List<Employee>()
-{
-   new Employee() { DepartmentId = 1, Name = "Инна", Id = 1},
-   new Employee() { DepartmentId = 1, Name = "Андрей", Id = 2},
-   new Employee() { DepartmentId = 2, Name = "Виктор ", Id = 3},
-   new Employee() { DepartmentId = 3, Name = "Альберт ", Id = 4},
-};
+            Console.WriteLine(string.Join(" ", allStudents));
+        }
 
-            var employeeAndDep = from employee in employees
-                                 join dep in departments on employee.DepartmentId equals dep.Id //  соединяем коллекции по общему ключу
-                                 select new // выборка в новую сущность
-                                 {
-                                     EmployeeName = employee.Name,
-                                     DepartmentName = dep.Name
-                                 };
+        static string[] GetAllStudents(Classroom[] classes)
+        {
+            return (from cl in classes
+                    from student in cl.Students
+                    select student).ToArray();
+            
+        }
 
-            foreach (var item in employeeAndDep)
-                Console.WriteLine(item.EmployeeName + ", отдел: " + item.DepartmentName);
+        public class Classroom
+        {
+            public List<string> Students = new List<string>();
         }
     }
 }
